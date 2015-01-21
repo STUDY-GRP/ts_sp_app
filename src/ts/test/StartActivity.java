@@ -271,7 +271,7 @@ public class StartActivity extends Activity implements OnClickListener{
 			Toast.makeText(this, encode, Toast.LENGTH_LONG).show();
 			
 			//HttpGet request = new HttpGet("http://www.finds.jp/ws/rgeocode.php?lat=35.6853264&lon=139.7530997&json");
-			HttpPost request = new HttpPost("https://ec2-54-65-77-17.ap-northeast-1.compute.amazonaws.com:3000/api/1.0/auth/access_token");
+			HttpPost request = new HttpPost("[hostname]/api/1.0/auth/access_token");
 			request.setHeader("Authorization", "Basic " + encode);
 			
 			new HttpGetTask().execute(request);
