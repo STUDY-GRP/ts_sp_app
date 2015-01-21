@@ -82,13 +82,13 @@ public class MainActivity extends Activity {
             //TextView txtResult = (TextView)findViewById(R.id.msg);
             //txtResult.setText(textAndLangCode);
             if(textAndLangCode.startsWith("start")){
-            	HttpPost request = new HttpPost("https://ec2-54-65-77-17.ap-northeast-1.compute.amazonaws.com:3000/api/1.0/attendance_time");
+            	HttpPost request = new HttpPost("[hostname]/api/1.0/attendance_time");
     			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
     			new HttpGetTask().execute(request);
 
     			Toast.makeText(this, "出勤しました", Toast.LENGTH_LONG).show();
             }else if(textAndLangCode.startsWith("end")){
-            	HttpPost request = new HttpPost("https://ec2-54-65-77-17.ap-northeast-1.compute.amazonaws.com:3000/api/1.0/quitting_time");
+            	HttpPost request = new HttpPost("[hostname]/api/1.0/quitting_time");
     			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
     			new HttpGetTask().execute(request);
     			
