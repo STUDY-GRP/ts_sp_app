@@ -5,9 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -17,8 +14,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import ts.test.StartActivity.HttpGetTask;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,21 +25,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private static final String LOCAL_FILE = "key.txt";
 	private static final String TAG = "MainActivity";
+	private static final String HN_FILE = "HN.txt";
+	private String HOSTNAME = "http://ec2-54-65-70-147.ap-northeast-1.compute.amazonaws.com:3000";
+	private String ST = "";
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
         String action = intent.getAction();
         
-      //ファイルの読み込み
+      //認証キーファイルの読み込み
         InputStream in;
         String lineBuffer ="";
         try {
@@ -59,16 +55,33 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
         
+      //HNファイルの読み込み
+        InputStream in2;
+        String lineBuffer2 ="";
+        try {
+            in2 = openFileInput(HN_FILE); 
+     
+            BufferedReader reader= new BufferedReader(new InputStreamReader(in2,"UTF-8"));
+            while( (lineBuffer2 = reader.readLine()) != null ){
+                Log.d("HN",lineBuffer2);
+                if(!lineBuffer2.equals("")){
+                	HOSTNAME = lineBuffer2; 
+                }
+            }
+        } catch (IOException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        }
+        
         if(action.equals((NfcAdapter.ACTION_NDEF_DISCOVERED))) {
         	byte[] rawId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
         	String text = bytesToText(rawId);
-        	//TextView nfcIdTextView = (TextView)findViewById(R.id.nfc_id_textview);
-        	//nfcIdTextView.setText(text);
-        	
+
         	Parcelable[] messages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         	NdefMessage message = (NdefMessage)messages[0];
-        	NdefRecord[] records = message.getRecords();
-        	String textAndLangCode ="";
+        	//NdefRecord[] records = message.getRecords();
+        	String textAndLangCode = new String(message.getRecords()[0].getPayload());
+        	/*String textAndLangCode ="";
         	for(NdefRecord record : records) {
         		if (isTextRecord(record)) {
         			textAndLangCode = getTextAndLangCode(record);
@@ -76,23 +89,20 @@ public class MainActivity extends Activity {
         			Toast.makeText(getApplicationContext(), "Not Text Record", Toast.LENGTH_SHORT)
         			.show();
         			}
-        	}
-            Log.d("TEST", text);
-            //Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-            //TextView txtResult = (TextView)findViewById(R.id.msg);
-            //txtResult.setText(textAndLangCode);
-            if(textAndLangCode.startsWith("start")){
-            	HttpPost request = new HttpPost("[hostname]/api/1.0/attendance_time");
-    			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
-    			new HttpGetTask().execute(request);
+        	}*/
+            Log.d("TEST", "ID:" + text);
 
-    			Toast.makeText(this, "出勤しました", Toast.LENGTH_LONG).show();
-            }else if(textAndLangCode.startsWith("end")){
-            	HttpPost request = new HttpPost("[hostname]/api/1.0/quitting_time");
+            if(textAndLangCode.startsWith("start")){ //出勤タグ
+            	ST = "S";
+            	HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/attendance_time");
+    			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
+
+    			new HttpGetTask().execute(request);
+            }else if(textAndLangCode.startsWith("end")){ //退勤タグ
+            	ST = "E";
+            	HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/quitting_time");
     			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
     			new HttpGetTask().execute(request);
-    			
-    			Toast.makeText(this, "退勤しました", Toast.LENGTH_LONG).show();
             }else{
             	Toast.makeText(this, "システムエラー", Toast.LENGTH_LONG).show();
             }
@@ -158,7 +168,6 @@ public class MainActivity extends Activity {
 	    	String title = "ないよ";
 	    	StringBuilder builder = new StringBuilder();
 	    	
-	    	//int statusCode = response.getStatusLine().getStatusCode();
 	    	// ステータスコードを取得
 	    	int statusCode = response.getStatusLine().getStatusCode();
 	    	//レスポンスからHTTPエンティティ（実体）を生成
@@ -203,13 +212,20 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 			try {
-				//title = jsono.getString("result");
+				
 				
 				if(statusCode != 200){
 					title = jsono.getString("header");
 					jsono = new JSONObject(title);
 					Log.d(TAG, jsono.getString("errorcode"));
 					Log.d(TAG, jsono.getString("message"));
+					Toast.makeText(getApplicationContext(), "失敗しました。", Toast.LENGTH_SHORT).show();
+				}else{
+					if(ST.equals("S")){
+						Toast.makeText(getApplicationContext(), "出勤しました。", Toast.LENGTH_SHORT).show();
+					}else if(ST.equals("E")){
+						Toast.makeText(getApplicationContext(), "退勤しました。", Toast.LENGTH_SHORT).show();
+					}
 				}
 				
 				title = jsono.getString("access_token");
@@ -222,10 +238,4 @@ public class MainActivity extends Activity {
 			
 	    }
 	}
-	/*
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-	}*/
 }

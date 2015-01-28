@@ -14,7 +14,9 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
+        public static final int HN=0x7f07000a;
         public static final int end=0x7f070006;
+        public static final int input_HN=0x7f070009;
         public static final int input_id=0x7f070002;
         public static final int input_pw=0x7f070003;
         public static final int msg=0x7f070001;
