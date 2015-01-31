@@ -15,6 +15,7 @@ public final class R {
     }
     public static final class id {
         public static final int HN=0x7f07000a;
+        public static final int HN_load=0x7f07000b;
         public static final int end=0x7f070006;
         public static final int input_HN=0x7f070009;
         public static final int input_id=0x7f070002;

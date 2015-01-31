@@ -16,6 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/input_id"
+            android:inputType="text"
+            android:imeOptions="actionDone"
             android:hint="IDを入力します" />
         
     </LinearLayout>
@@ -33,6 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/input_pw"
+            android:inputType="text"
+            android:imeOptions="actionDone"
             android:hint="パスワードを入力します" />
         
     </LinearLayout>
@@ -115,6 +119,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/input_HN"
+            android:inputType="textUri"
+            android:imeOptions="actionDone"
             android:hint="ホストネームを入力します" />
         </LinearLayout>
         <LinearLayout
@@ -126,7 +132,14 @@
 		    android:id="@+id/HN"
 		    android:layout_width="100dp"
 		    android:layout_height="wrap_content"
-		    android:text="HNボタン"
+		    android:text="HN_SET"
+		   >
+	  </Button>
+	  <Button
+		    android:id="@+id/HN_load"
+		    android:layout_width="100dp"
+		    android:layout_height="wrap_content"
+		    android:text="HN_Load"
 		   >
 	  </Button>
         

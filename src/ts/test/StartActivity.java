@@ -50,7 +50,7 @@ public class StartActivity extends Activity implements OnClickListener{
 	private static final String E_MSG = "退勤ダグを作成します";
 	private static final String LOCAL_FILE = "key.txt";
 	private static final String HN_FILE = "HN.txt";
-	private String HOSTNAME = "http://ec2-54-65-70-147.ap-northeast-1.compute.amazonaws.com:3000";
+	private String HOSTNAME = "test";
 	private TextView msg;
 	private EditText id;
 	private EditText pw;
@@ -76,12 +76,14 @@ public class StartActivity extends Activity implements OnClickListener{
 		Button push = (Button)findViewById(R.id.push);
 		Button test = (Button)findViewById(R.id.test);
 		Button hnw = (Button)findViewById(R.id.HN);
+		Button hnl = (Button)findViewById(R.id.HN_load);
 		start.setOnClickListener(this);
 		end.setOnClickListener(this);
 		write.setOnClickListener(this);
 		push.setOnClickListener(this);
 		test.setOnClickListener(this);
 		hnw.setOnClickListener(this);
+		hnl.setOnClickListener(this);
 
 
 
@@ -264,17 +266,13 @@ public class StartActivity extends Activity implements OnClickListener{
 
 			//HttpGet request = new HttpGet("http://www.finds.jp/ws/rgeocode.php?lat=35.6853264&lon=139.7530997&json");
 			HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/auth/access_token");
+			//HttpPost request = new HttpPost(HOSTNAME + "/auth/access_token");
 			//HttpPost request = new HttpPost("https://www.google.co.jp");
 			Log.d(TAG, HOSTNAME + "/api/1.0/auth/access_token");
 			request.setHeader("Authorization", "Basic " + encode);
 			request.setHeader("content-type", "application/json");
 			request.setHeader("Accept", "application/json");
-			/*HttpParams httpParameters = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
-			HttpConnectionParams.setSoTimeout(httpParameters, 10000+12000);
-
-			request.setParams(httpParameters);
-			*/
+			
 
 
 			new HttpGetTask().execute(request);
@@ -303,10 +301,34 @@ public class StartActivity extends Activity implements OnClickListener{
 				//追記する
 				writer.append(hn.getText().toString());
 				writer.close();
+				Toast.makeText(this, "ホスト名を記録しました", Toast.LENGTH_SHORT).show();
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
+
+			break;
+			
+		case R.id.HN_load: //ホストネームの書き込み
+		      //HNファイルの読み込み
+	        InputStream in2;
+	        String lineBuffer2 ="";
+	        try {
+	            in2 = openFileInput(HN_FILE); 
+	     
+	            BufferedReader reader= new BufferedReader(new InputStreamReader(in2,"UTF-8"));
+	            while( (lineBuffer2 = reader.readLine()) != null ){
+	                Log.d("HN",lineBuffer2);
+	                if(!lineBuffer2.equals("")){
+	                	HOSTNAME = lineBuffer2; 
+	                	hn.setText(HOSTNAME);
+
+	                }
+	            }
+	        } catch (IOException e) {
+	            // TODO 自動生成された catch ブロック
+	            e.printStackTrace();
+	        }
 
 			break;
 		}
@@ -319,6 +341,14 @@ public class StartActivity extends Activity implements OnClickListener{
 		protected HttpResponse doInBackground(HttpUriRequest... request) {
 
 			AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Demo AndroidHttpClient");
+			HttpParams params = httpClient.getParams();
+			Log.d(TAG, "http.protocol.version:" + params.getParameter("http.protocol.version"));
+			Log.d(TAG, "http.protocol.content-charset:" + params.getParameter("http.protocol.content-charset"));
+			Log.d(TAG, "http.protocol.handle-redirects:" + params.getParameter("http.protocol.handle-redirects"));
+			Log.d(TAG, "http.conn-manager.timeout:" + params.getParameter("http.conn-manager.timeout"));
+			Log.d(TAG, "http.socket.timeout:" + params.getParameter("http.socket.timeout"));
+			Log.d(TAG, "http.connection.timeout:" + params.getParameter("http.connection.timeout"));
+			
 			HttpResponse response = null;
 
 			try {

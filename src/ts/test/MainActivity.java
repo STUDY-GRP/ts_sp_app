@@ -31,8 +31,9 @@ public class MainActivity extends Activity {
 	private static final String LOCAL_FILE = "key.txt";
 	private static final String TAG = "MainActivity";
 	private static final String HN_FILE = "HN.txt";
-	private String HOSTNAME = "http://ec2-54-65-70-147.ap-northeast-1.compute.amazonaws.com:3000";
+	private String HOSTNAME = "test";
 	private String ST = "";
+	private String ID = "";
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +50,7 @@ public class MainActivity extends Activity {
             BufferedReader reader= new BufferedReader(new InputStreamReader(in,"UTF-8"));
             while( (lineBuffer = reader.readLine()) != null ){
                 Log.d("FileAccess",lineBuffer);
+                ID = lineBuffer;
             }
         } catch (IOException e) {
             // TODO 自動生成された catch ブロック
@@ -95,13 +97,21 @@ public class MainActivity extends Activity {
             if(textAndLangCode.startsWith("start")){ //出勤タグ
             	ST = "S";
             	HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/attendance_time");
+            	//HttpPost request = new HttpPost(HOSTNAME + "/attendance_time");
     			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
+    			request.setHeader("content-type", "application/json");
+    			request.setHeader("Accept", "application/json");
 
     			new HttpGetTask().execute(request);
             }else if(textAndLangCode.startsWith("end")){ //退勤タグ
             	ST = "E";
             	HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/quitting_time");
-    			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
+            	//HttpPost request = new HttpPost(HOSTNAME + "/quitting_time");
+    			request.setHeader("Authorization", "Bearer ?" + ID +"?");
+    			Log.d("TEST", "HN:" + HOSTNAME);
+    			Log.d("TEST", "ID:" + ID);
+    			request.setHeader("content-type", "application/json");
+    			request.setHeader("Accept", "application/json");
     			new HttpGetTask().execute(request);
             }else{
             	Toast.makeText(this, "システムエラー", Toast.LENGTH_LONG).show();
