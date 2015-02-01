@@ -246,7 +246,7 @@ public class StartActivity extends Activity implements OnClickListener{
 				PrintWriter writer = new PrintWriter(new OutputStreamWriter(out,"UTF-8"));
 
 				//追記する
-				writer.append("0123456789");
+				writer.append("f2b8b63dea78d6353116db84bbe6a06a35dfd9a9b21b3684fb63620ba582761a8ea3e05cd07b43d3be118e5ce6009f11f6137bca8e6f7c5e48e3824d2862f44c");
 				writer.close();
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック

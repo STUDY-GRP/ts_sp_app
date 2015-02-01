@@ -98,7 +98,10 @@ public class MainActivity extends Activity {
             	ST = "S";
             	HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/attendance_time");
             	//HttpPost request = new HttpPost(HOSTNAME + "/attendance_time");
-    			request.setHeader("Authorization", "Bearer ?" + lineBuffer +"?");
+    			//request.setHeader("Authorization", "Bearer ?" + ID +"?");
+            	request.setHeader("Authorization", "Bearer " + ID);
+            	Log.d("TEST", "HN:" + HOSTNAME);
+    			Log.d("TEST", "ID:" + ID);
     			request.setHeader("content-type", "application/json");
     			request.setHeader("Accept", "application/json");
 
@@ -107,8 +110,9 @@ public class MainActivity extends Activity {
             	ST = "E";
             	HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/quitting_time");
             	//HttpPost request = new HttpPost(HOSTNAME + "/quitting_time");
-    			request.setHeader("Authorization", "Bearer ?" + ID +"?");
-    			Log.d("TEST", "HN:" + HOSTNAME);
+    			//request.setHeader("Authorization", "Bearer ?" + ID +"?");
+            	request.setHeader("Authorization", "Bearer " + ID);
+            	Log.d("TEST", "HN:" + HOSTNAME);
     			Log.d("TEST", "ID:" + ID);
     			request.setHeader("content-type", "application/json");
     			request.setHeader("Accept", "application/json");
