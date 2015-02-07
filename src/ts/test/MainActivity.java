@@ -24,6 +24,7 @@ import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -96,13 +97,12 @@ public class MainActivity extends Activity {
 
             if(textAndLangCode.startsWith("start")){ //出勤タグ
             	ST = "S";
+            	
             	HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/attendance_time");
-            	//HttpPost request = new HttpPost(HOSTNAME + "/attendance_time");
-    			//request.setHeader("Authorization", "Bearer ?" + ID +"?");
             	request.setHeader("Authorization", "Bearer " + ID);
             	Log.d("TEST", "HN:" + HOSTNAME);
     			Log.d("TEST", "ID:" + ID);
-    			request.setHeader("content-type", "application/json");
+    			//request.setHeader("Content-type", "application/json");
     			request.setHeader("Accept", "application/json");
 
     			new HttpGetTask().execute(request);
@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
             	request.setHeader("Authorization", "Bearer " + ID);
             	Log.d("TEST", "HN:" + HOSTNAME);
     			Log.d("TEST", "ID:" + ID);
-    			request.setHeader("content-type", "application/json");
+    			//request.setHeader("Content-type", "application/json");
     			request.setHeader("Accept", "application/json");
     			new HttpGetTask().execute(request);
             }else{
@@ -242,7 +242,7 @@ public class MainActivity extends Activity {
 					}
 				}
 				
-				title = jsono.getString("access_token");
+				//title = jsono.getString("access_token");
 			} catch (JSONException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();

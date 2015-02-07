@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
@@ -259,18 +260,19 @@ public class StartActivity extends Activity implements OnClickListener{
 				HOSTNAME = hn.getText().toString();
 			}
 			String buf = "";
+			String encode ="";
 			buf = id.getText().toString() + ":" + pw.getText().toString();
 			Log.d(TAG, buf);
-			String encode = Base64.encodeToString(buf.getBytes(), Base64.DEFAULT);
+			//String encode = Base64.encodeToString(buf.getBytes(), Base64.DEFAULT);
+			encode = Base64.encodeToString( buf.getBytes() , Base64.NO_WRAP);
+
 			Log.d(TAG, "encode:" + encode);
 
 			//HttpGet request = new HttpGet("http://www.finds.jp/ws/rgeocode.php?lat=35.6853264&lon=139.7530997&json");
 			HttpPost request = new HttpPost(HOSTNAME + "/api/1.0/auth/access_token");
-			//HttpPost request = new HttpPost(HOSTNAME + "/auth/access_token");
-			//HttpPost request = new HttpPost("https://www.google.co.jp");
 			Log.d(TAG, HOSTNAME + "/api/1.0/auth/access_token");
 			request.setHeader("Authorization", "Basic " + encode);
-			request.setHeader("content-type", "application/json");
+			//request.setHeader("content-type", "application/json");
 			request.setHeader("Accept", "application/json");
 			
 
@@ -356,7 +358,7 @@ public class StartActivity extends Activity implements OnClickListener{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			//httpClient.close();
+			httpClient.close();
 			return response;
 		}
 
@@ -429,6 +431,7 @@ public class StartActivity extends Activity implements OnClickListener{
 
 					//追記する
 					writer.append(title);
+					Log.d(TAG, "ファイル" + title);
 					writer.close();
 				} catch (IOException e) {
 					// TODO 自動生成された catch ブロック
