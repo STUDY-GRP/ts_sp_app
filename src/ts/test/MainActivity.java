@@ -122,7 +122,7 @@ public class MainActivity extends Activity {
             }
             
             
-            
+            this.finish();
             
         }
     }
@@ -248,8 +248,9 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 	        
-			
+		
 			
 	    }
+	    
 	}
 }
